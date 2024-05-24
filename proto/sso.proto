@@ -1,0 +1,72 @@
+syntax = "proto3";
+// Текущий пакет - указывает пространство имен для сервиса и сообщений.
+package auth;
+
+// Настройки для генерации GO кода. Используется при генерации файлов на GO
+option go_package = "erkkipm.sso.v1;ssov1";
+
+// Сервис для входа и регистрации
+service Auth {
+  // Регистрация нового пользователя
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  // Вход в приложение
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // Проверка. Имеет ли пользователь права администратора
+  rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+  // Запрос пользователя по ID
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+}
+
+//service Permissions {
+//  rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
+//}
+
+//service UserInfo {
+//  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+//}
+
+message RegisterRequest {
+  string email = 1; // e-mail при регистрации
+  string password = 2; // Пароль при регистрации
+}
+
+message RegisterResponse {
+  int64 user_id = 1;  // Идентификатор зарегистрированного юзера
+  bool success = 2; // Статус регистрации
+}
+
+message LoginRequest {
+  string email = 1; // e-mail при входе
+  string password = 2; // Пароль при входе
+  int32 app_id = 3; // Идентификатор приложения для входа
+}
+
+message LoginResponse {
+  string token = 1; // Токен для входа в приложение
+}
+
+message GetUserRequest {
+  string name = 1; // Имя юзера
+  string email = 2; // e-mail юзера
+}
+
+message GetUserResponse {
+  int64 user_id = 1;  // Идентификатор юзера
+}
+
+message IsAdminRequest {
+  int64 user_id = 1; // Идентификатор юзера
+}
+
+message IsAdminResponse {
+  bool is_admin = 1; // Признак администратора
+}
+
+message LogoutRequest {
+  string token = 1; // Токен для выхода
+}
+
+message LogoutResponse {
+  bool success = 1; // Статус выхода
+}

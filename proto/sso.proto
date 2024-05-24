@@ -18,6 +18,7 @@ service Auth {
   rpc Logout(LogoutRequest) returns (LogoutResponse);
 }
 
+
 //service Permissions {
 //  rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
 //}

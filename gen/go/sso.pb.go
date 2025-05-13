@@ -153,9 +153,9 @@ func (x *RegisterResponse) GetMessage() string {
 
 type LoginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`               // e-mail при входе
-	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`         // Пароль при входе
-	AppId         int32                  `protobuf:"varint,3,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // Идентификатор приложения для входа
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`              // e-mail при входе
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`        // Пароль при входе
+	AppId         string                 `protobuf:"bytes,3,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // Идентификатор приложения для входа
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -204,11 +204,11 @@ func (x *LoginRequest) GetPassword() string {
 	return ""
 }
 
-func (x *LoginRequest) GetAppId() int32 {
+func (x *LoginRequest) GetAppId() string {
 	if x != nil {
 		return x.AppId
 	}
-	return 0
+	return ""
 }
 
 type LoginResponse struct {
@@ -544,7 +544,7 @@ const file_sso_proto_rawDesc = "" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x15\n" +
-	"\x06app_id\x18\x03 \x01(\x05R\x05appId\"%\n" +
+	"\x06app_id\x18\x03 \x01(\tR\x05appId\"%\n" +
 	"\rLoginResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\":\n" +
 	"\x0eGetUserRequest\x12\x12\n" +
@@ -565,7 +565,7 @@ const file_sso_proto_rawDesc = "" +
 	"\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x126\n" +
 	"\aIsAdmin\x12\x14.auth.IsAdminRequest\x1a\x15.auth.IsAdminResponse\x126\n" +
 	"\aGetUser\x12\x14.auth.GetUserRequest\x1a\x15.auth.GetUserResponse\x123\n" +
-	"\x06Logout\x12\x13.auth.LogoutRequest\x1a\x14.auth.LogoutResponseB\x16Z\x14erkkipm.sso.v1;ssov1b\x06proto3"
+	"\x06Logout\x12\x13.auth.LogoutRequest\x1a\x14.auth.LogoutResponseB$Z\"github.com/erkkipm/proto_sso;ssov1b\x06proto3"
 
 var (
 	file_sso_proto_rawDescOnce sync.Once

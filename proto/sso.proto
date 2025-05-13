@@ -48,7 +48,7 @@ message RegisterResponse {
 message LoginRequest {
   string email = 1; // e-mail при входе
   string password = 2; // Пароль при входе
-  int32 app_id = 3; // Идентификатор приложения для входа
+  string app_id = 3; // Идентификатор приложения для входа
 }
 
 message LoginResponse {

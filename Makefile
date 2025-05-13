@@ -4,7 +4,6 @@ PROTO_DIR = ./proto/
 .PHONY: all
 all: install gen
 
-
 .PHONY: gen
 gen:
 	@echo "======= Генерация кода ========"

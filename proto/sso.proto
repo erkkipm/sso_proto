@@ -5,7 +5,7 @@ package auth;
 //import "google/protobuf/timestamp.proto";
 
 // Настройки для генерации GO кода. Используется при генерации файлов на GO
-option go_package = "erkkipm.sso.v1;ssov1";
+option go_package = "github.com/erkkipm/proto_sso;ssov1";
 //option go_package = "github.com/wpcodevo/golang-mongodb/pb";
 
 // Сервис для входа и регистрации

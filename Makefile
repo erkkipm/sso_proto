@@ -23,5 +23,6 @@ install:
 #	@export PATH="$PATH:$(go env GOPATH)/bin"
 
 
-#git tag v0.5.1
-#git push origin v0.5.1
+#git tag v0.5.2
+#git push origin v0.5.2
+#go get github.com/erkkipm/sso_proto@v0.5.2

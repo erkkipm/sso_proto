@@ -23,4 +23,5 @@ install:
 #	@export PATH="$PATH:$(go env GOPATH)/bin"
 
 
-
+#git tag v0.5.1
+#git push origin v0.5.1

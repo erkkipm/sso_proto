@@ -54,6 +54,7 @@ message LoginRequest {
 message LoginResponse {
   string token = 1; // Токен для входа в приложение
   string email = 2; // e-mail при входе (логин)
+  string phone = 3; // Телефон при входе
 }
 
 message GetUserRequest {

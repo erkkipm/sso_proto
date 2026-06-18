@@ -9,7 +9,7 @@ gen:
 	@echo "======= Генерация кода ========"
 	@rm -rf $(GEN_DIR)
 	@mkdir -p $(GEN_DIR)
-	@protoc -I $(PROTO_DIR) $(PROTO_DIR)*.proto \
+	@protoc -I $(PROTO_DIR) $(shell find $(PROTO_DIR) -name '*.proto') \
 			--go_out=$(GEN_DIR) --go_opt=paths=source_relative \
 	       	  --go-grpc_out=$(GEN_DIR) --go-grpc_opt=paths=source_relative \
 	        --experimental_allow_proto3_optional \
@@ -23,6 +23,6 @@ install:
 #	@export PATH="$PATH:$(go env GOPATH)/bin"
 
 
-#git tag v0.5.2
-#git push origin v0.5.2
-#go get github.com/erkkipm/sso_proto@v0.5.2
+#git tag v0.5.3
+#git push origin v0.5.3
+#go get github.com/erkkipm/sso_proto@v0.5.3

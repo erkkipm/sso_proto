@@ -2,8 +2,6 @@ syntax = "proto3";
 // Текущий пакет - указывает пространство имен для сервиса и сообщений.
 package auth;
 
-//import "google/protobuf/timestamp.proto";
-
 // Настройки для генерации GO кода. Используется при генерации файлов на GO
 option go_package = "github.com/erkkipm/proto_sso;ssov1";
 //option go_package = "github.com/wpcodevo/golang-mongodb/pb";
@@ -20,8 +18,6 @@ service Auth {
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc Logout(LogoutRequest) returns (LogoutResponse);
 }
-
-
 //service Permissions {
 //  rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
 //}

@@ -1,0 +1,291 @@
+syntax = "proto3";
+
+// Контракт SSO-сервиса аутентификации, версия v1.
+// Вызывается бэкендами сайтов (server-to-server).
+// Аутентификация приложения-клиента — метаданные x-app-id / x-app-secret.
+// Авторизованные методы пользователя — метаданные authorization: Bearer <access_token>.
+package auth.v1;
+
+option go_package = "github.com/erkkipm/sso_proto/gen/go/auth/v1;authv1";
+
+service AuthService {
+  // --- Регистрация и подтверждение email ---
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfirmEmailResponse);
+  rpc ResendEmailCode(ResendEmailCodeRequest) returns (ResendEmailCodeResponse);
+
+  // --- Вход (двухэтапный: пароль -> при включённой 2FA challenge -> VerifyTwoFactor) ---
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // Запросить отправку одноразового кода для challenge (методы EMAIL/TELEGRAM)
+  rpc RequestTwoFactorCode(RequestTwoFactorCodeRequest) returns (RequestTwoFactorCodeResponse);
+  rpc VerifyTwoFactor(VerifyTwoFactorRequest) returns (VerifyTwoFactorResponse);
+
+  // --- Токены ---
+  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc GetPublicKeys(GetPublicKeysRequest) returns (GetPublicKeysResponse);
+
+  // --- Пароль ---
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse); // Bearer
+  rpc RequestPasswordReset(RequestPasswordResetRequest) returns (RequestPasswordResetResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+
+  // --- Управление 2FA (все методы — Bearer) ---
+  rpc GetTwoFactorStatus(GetTwoFactorStatusRequest) returns (GetTwoFactorStatusResponse);
+  rpc BeginTOTPEnrollment(BeginTOTPEnrollmentRequest) returns (BeginTOTPEnrollmentResponse);
+  rpc ConfirmTOTPEnrollment(ConfirmTOTPEnrollmentRequest) returns (ConfirmTOTPEnrollmentResponse);
+  rpc DisableTwoFactor(DisableTwoFactorRequest) returns (DisableTwoFactorResponse);
+  rpc BeginTelegramLink(BeginTelegramLinkRequest) returns (BeginTelegramLinkResponse);
+  rpc UnlinkTelegram(UnlinkTelegramRequest) returns (UnlinkTelegramResponse);
+
+  // --- Сервисные запросы (server-to-server) ---
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+}
+
+// Метаданные конечного пользователя; их передаёт бэкенд сайта
+// (реальный IP и User-Agent из HTTP-запроса пользователя).
+message ClientMeta {
+  string ip = 1;
+  string user_agent = 2;
+}
+
+enum TwoFactorMethod {
+  TWO_FACTOR_METHOD_UNSPECIFIED = 0;
+  TWO_FACTOR_METHOD_TOTP = 1;          // приложение-аутентификатор
+  TWO_FACTOR_METHOD_EMAIL = 2;         // одноразовый код на почту
+  TWO_FACTOR_METHOD_TELEGRAM = 3;      // одноразовый код в Telegram
+  TWO_FACTOR_METHOD_RECOVERY_CODE = 4; // резервный код восстановления
+}
+
+message TokenPair {
+  string access_token = 1;       // JWT (EdDSA/Ed25519), короткоживущий
+  string refresh_token = 2;      // непрозрачный токен, одноразовый (ротация)
+  int64 access_expires_in = 3;   // секунд до истечения access
+  int64 refresh_expires_in = 4;  // секунд до истечения refresh
+}
+
+message TwoFactorChallenge {
+  string challenge_id = 1;
+  repeated TwoFactorMethod available_methods = 2;
+  int64 expires_in = 3; // секунд
+}
+
+// --- Регистрация ---
+
+message RegisterRequest {
+  string email = 1;
+  string phone = 2;
+  string password = 3;
+  ClientMeta meta = 4;
+}
+
+message RegisterResponse {
+  string user_id = 1; // hex ObjectID
+  bool email_verification_required = 2;
+}
+
+message ConfirmEmailRequest {
+  string email = 1;
+  string code = 2;
+  ClientMeta meta = 3;
+}
+
+message ConfirmEmailResponse {
+  bool success = 1;
+}
+
+message ResendEmailCodeRequest {
+  string email = 1;
+  ClientMeta meta = 2;
+}
+
+message ResendEmailCodeResponse {
+  bool success = 1; // всегда true, если запрос принят (anti-enumeration)
+}
+
+// --- Вход ---
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  ClientMeta meta = 3;
+}
+
+message LoginResponse {
+  oneof result {
+    TokenPair tokens = 1;             // 2FA выключена — вход завершён
+    TwoFactorChallenge challenge = 2; // 2FA включена — нужен второй шаг
+  }
+}
+
+message RequestTwoFactorCodeRequest {
+  string challenge_id = 1;
+  TwoFactorMethod method = 2; // EMAIL или TELEGRAM
+  ClientMeta meta = 3;
+}
+
+message RequestTwoFactorCodeResponse {
+  bool sent = 1;
+  int64 expires_in = 2; // секунд
+}
+
+message VerifyTwoFactorRequest {
+  string challenge_id = 1;
+  TwoFactorMethod method = 2;
+  string code = 3;
+  ClientMeta meta = 4;
+}
+
+message VerifyTwoFactorResponse {
+  TokenPair tokens = 1;
+}
+
+// --- Токены ---
+
+message RefreshRequest {
+  string refresh_token = 1;
+  ClientMeta meta = 2;
+}
+
+message RefreshResponse {
+  TokenPair tokens = 1;
+}
+
+message LogoutRequest {
+  string refresh_token = 1;
+  bool all_sessions = 2; // завершить все сессии пользователя
+}
+
+message LogoutResponse {
+  bool success = 1;
+}
+
+message ValidateTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string user_id = 2;
+  string email = 3;
+  bool is_admin = 4;
+  int64 expires_at = 5; // unix-время
+}
+
+message GetPublicKeysRequest {}
+
+message PublicKey {
+  string kid = 1;
+  string algorithm = 2; // "EdDSA"
+  string public_key_pem = 3;
+}
+
+message GetPublicKeysResponse {
+  repeated PublicKey keys = 1;
+}
+
+// --- Пароль ---
+
+message ChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
+  ClientMeta meta = 3;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+}
+
+message RequestPasswordResetRequest {
+  string email = 1;
+  ClientMeta meta = 2;
+}
+
+message RequestPasswordResetResponse {
+  bool success = 1; // всегда true (anti-enumeration)
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+  string code = 2;
+  string new_password = 3;
+  ClientMeta meta = 4;
+}
+
+message ResetPasswordResponse {
+  bool success = 1;
+}
+
+// --- Управление 2FA ---
+
+message GetTwoFactorStatusRequest {}
+
+message GetTwoFactorStatusResponse {
+  bool enabled = 1;
+  repeated TwoFactorMethod available_methods = 2;
+  bool telegram_linked = 3;
+  int32 recovery_codes_left = 4;
+}
+
+message BeginTOTPEnrollmentRequest {}
+
+message BeginTOTPEnrollmentResponse {
+  string secret_base32 = 1;
+  string otpauth_url = 2; // сайт сам отображает QR-код
+}
+
+message ConfirmTOTPEnrollmentRequest {
+  string code = 1;
+}
+
+message ConfirmTOTPEnrollmentResponse {
+  repeated string recovery_codes = 1; // показываются пользователю один раз
+}
+
+message DisableTwoFactorRequest {
+  string password = 1; // подтверждение паролем
+}
+
+message DisableTwoFactorResponse {
+  bool success = 1;
+}
+
+message BeginTelegramLinkRequest {}
+
+message BeginTelegramLinkResponse {
+  string link_code = 1;    // пользователь отправляет боту: /start <code>
+  string bot_username = 2; // без @
+  int64 expires_in = 3;    // секунд
+}
+
+message UnlinkTelegramRequest {}
+
+message UnlinkTelegramResponse {
+  bool success = 1;
+}
+
+// --- Сервисные запросы ---
+
+message GetUserRequest {
+  string user_id = 1; // hex ObjectID
+}
+
+message GetUserResponse {
+  string user_id = 1;
+  string email = 2;
+  string phone = 3;
+  bool email_verified = 4;
+  bool is_admin = 5;
+  bool two_factor_enabled = 6;
+  int64 created_at = 7; // unix-время
+}
+
+message IsAdminRequest {
+  string user_id = 1;
+}
+
+message IsAdminResponse {
+  bool is_admin = 1;
+}

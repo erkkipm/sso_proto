@@ -45,6 +45,13 @@ const (
 	AuthService_UnlinkTelegram_FullMethodName        = "/auth.v1.AuthService/UnlinkTelegram"
 	AuthService_GetUser_FullMethodName               = "/auth.v1.AuthService/GetUser"
 	AuthService_IsAdmin_FullMethodName               = "/auth.v1.AuthService/IsAdmin"
+	AuthService_GrantRole_FullMethodName             = "/auth.v1.AuthService/GrantRole"
+	AuthService_RevokeRole_FullMethodName            = "/auth.v1.AuthService/RevokeRole"
+	AuthService_GetUserRoles_FullMethodName          = "/auth.v1.AuthService/GetUserRoles"
+	AuthService_ListUsersByRole_FullMethodName       = "/auth.v1.AuthService/ListUsersByRole"
+	AuthService_CreateMagicLink_FullMethodName       = "/auth.v1.AuthService/CreateMagicLink"
+	AuthService_ConsumeMagicLink_FullMethodName      = "/auth.v1.AuthService/ConsumeMagicLink"
+	AuthService_RevokeMagicLinks_FullMethodName      = "/auth.v1.AuthService/RevokeMagicLinks"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -79,6 +86,17 @@ type AuthServiceClient interface {
 	// --- Сервисные запросы (server-to-server) ---
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
+	// --- Роли в рамках проекта (server-to-server) ---
+	GrantRole(ctx context.Context, in *GrantRoleRequest, opts ...grpc.CallOption) (*GrantRoleResponse, error)
+	RevokeRole(ctx context.Context, in *RevokeRoleRequest, opts ...grpc.CallOption) (*RevokeRoleResponse, error)
+	GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesResponse, error)
+	ListUsersByRole(ctx context.Context, in *ListUsersByRoleRequest, opts ...grpc.CallOption) (*ListUsersByRoleResponse, error)
+	// --- Magic-link (вход жюри без пароля; server-to-server) ---
+	// Персональная ссылка на тур голосования: НЕ одноразовая,
+	// действует до отзыва или истечения срока.
+	CreateMagicLink(ctx context.Context, in *CreateMagicLinkRequest, opts ...grpc.CallOption) (*CreateMagicLinkResponse, error)
+	ConsumeMagicLink(ctx context.Context, in *ConsumeMagicLinkRequest, opts ...grpc.CallOption) (*ConsumeMagicLinkResponse, error)
+	RevokeMagicLinks(ctx context.Context, in *RevokeMagicLinksRequest, opts ...grpc.CallOption) (*RevokeMagicLinksResponse, error)
 }
 
 type authServiceClient struct {
@@ -299,6 +317,76 @@ func (c *authServiceClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opt
 	return out, nil
 }
 
+func (c *authServiceClient) GrantRole(ctx context.Context, in *GrantRoleRequest, opts ...grpc.CallOption) (*GrantRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GrantRoleResponse)
+	err := c.cc.Invoke(ctx, AuthService_GrantRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) RevokeRole(ctx context.Context, in *RevokeRoleRequest, opts ...grpc.CallOption) (*RevokeRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeRoleResponse)
+	err := c.cc.Invoke(ctx, AuthService_RevokeRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserRolesResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetUserRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ListUsersByRole(ctx context.Context, in *ListUsersByRoleRequest, opts ...grpc.CallOption) (*ListUsersByRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersByRoleResponse)
+	err := c.cc.Invoke(ctx, AuthService_ListUsersByRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CreateMagicLink(ctx context.Context, in *CreateMagicLinkRequest, opts ...grpc.CallOption) (*CreateMagicLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateMagicLinkResponse)
+	err := c.cc.Invoke(ctx, AuthService_CreateMagicLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ConsumeMagicLink(ctx context.Context, in *ConsumeMagicLinkRequest, opts ...grpc.CallOption) (*ConsumeMagicLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConsumeMagicLinkResponse)
+	err := c.cc.Invoke(ctx, AuthService_ConsumeMagicLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) RevokeMagicLinks(ctx context.Context, in *RevokeMagicLinksRequest, opts ...grpc.CallOption) (*RevokeMagicLinksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevokeMagicLinksResponse)
+	err := c.cc.Invoke(ctx, AuthService_RevokeMagicLinks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -331,6 +419,17 @@ type AuthServiceServer interface {
 	// --- Сервисные запросы (server-to-server) ---
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
+	// --- Роли в рамках проекта (server-to-server) ---
+	GrantRole(context.Context, *GrantRoleRequest) (*GrantRoleResponse, error)
+	RevokeRole(context.Context, *RevokeRoleRequest) (*RevokeRoleResponse, error)
+	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesResponse, error)
+	ListUsersByRole(context.Context, *ListUsersByRoleRequest) (*ListUsersByRoleResponse, error)
+	// --- Magic-link (вход жюри без пароля; server-to-server) ---
+	// Персональная ссылка на тур голосования: НЕ одноразовая,
+	// действует до отзыва или истечения срока.
+	CreateMagicLink(context.Context, *CreateMagicLinkRequest) (*CreateMagicLinkResponse, error)
+	ConsumeMagicLink(context.Context, *ConsumeMagicLinkRequest) (*ConsumeMagicLinkResponse, error)
+	RevokeMagicLinks(context.Context, *RevokeMagicLinksRequest) (*RevokeMagicLinksResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -403,6 +502,27 @@ func (UnimplementedAuthServiceServer) GetUser(context.Context, *GetUserRequest) 
 }
 func (UnimplementedAuthServiceServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method IsAdmin not implemented")
+}
+func (UnimplementedAuthServiceServer) GrantRole(context.Context, *GrantRoleRequest) (*GrantRoleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GrantRole not implemented")
+}
+func (UnimplementedAuthServiceServer) RevokeRole(context.Context, *RevokeRoleRequest) (*RevokeRoleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RevokeRole not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserRoles not implemented")
+}
+func (UnimplementedAuthServiceServer) ListUsersByRole(context.Context, *ListUsersByRoleRequest) (*ListUsersByRoleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListUsersByRole not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateMagicLink(context.Context, *CreateMagicLinkRequest) (*CreateMagicLinkResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateMagicLink not implemented")
+}
+func (UnimplementedAuthServiceServer) ConsumeMagicLink(context.Context, *ConsumeMagicLinkRequest) (*ConsumeMagicLinkResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ConsumeMagicLink not implemented")
+}
+func (UnimplementedAuthServiceServer) RevokeMagicLinks(context.Context, *RevokeMagicLinksRequest) (*RevokeMagicLinksResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RevokeMagicLinks not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -803,6 +923,132 @@ func _AuthService_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GrantRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GrantRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GrantRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GrantRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GrantRole(ctx, req.(*GrantRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_RevokeRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RevokeRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RevokeRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RevokeRole(ctx, req.(*RevokeRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUserRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetUserRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUserRoles(ctx, req.(*GetUserRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ListUsersByRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersByRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ListUsersByRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ListUsersByRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ListUsersByRole(ctx, req.(*ListUsersByRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CreateMagicLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMagicLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateMagicLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreateMagicLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateMagicLink(ctx, req.(*CreateMagicLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ConsumeMagicLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsumeMagicLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ConsumeMagicLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ConsumeMagicLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ConsumeMagicLink(ctx, req.(*ConsumeMagicLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_RevokeMagicLinks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeMagicLinksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RevokeMagicLinks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RevokeMagicLinks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RevokeMagicLinks(ctx, req.(*RevokeMagicLinksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -893,6 +1139,34 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsAdmin",
 			Handler:    _AuthService_IsAdmin_Handler,
+		},
+		{
+			MethodName: "GrantRole",
+			Handler:    _AuthService_GrantRole_Handler,
+		},
+		{
+			MethodName: "RevokeRole",
+			Handler:    _AuthService_RevokeRole_Handler,
+		},
+		{
+			MethodName: "GetUserRoles",
+			Handler:    _AuthService_GetUserRoles_Handler,
+		},
+		{
+			MethodName: "ListUsersByRole",
+			Handler:    _AuthService_ListUsersByRole_Handler,
+		},
+		{
+			MethodName: "CreateMagicLink",
+			Handler:    _AuthService_CreateMagicLink_Handler,
+		},
+		{
+			MethodName: "ConsumeMagicLink",
+			Handler:    _AuthService_ConsumeMagicLink_Handler,
+		},
+		{
+			MethodName: "RevokeMagicLinks",
+			Handler:    _AuthService_RevokeMagicLinks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

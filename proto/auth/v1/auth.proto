@@ -42,6 +42,19 @@ service AuthService {
   // --- Сервисные запросы (server-to-server) ---
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+
+  // --- Роли в рамках проекта (server-to-server) ---
+  rpc GrantRole(GrantRoleRequest) returns (GrantRoleResponse);
+  rpc RevokeRole(RevokeRoleRequest) returns (RevokeRoleResponse);
+  rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse);
+  rpc ListUsersByRole(ListUsersByRoleRequest) returns (ListUsersByRoleResponse);
+
+  // --- Magic-link (вход жюри без пароля; server-to-server) ---
+  // Персональная ссылка на тур голосования: НЕ одноразовая,
+  // действует до отзыва или истечения срока.
+  rpc CreateMagicLink(CreateMagicLinkRequest) returns (CreateMagicLinkResponse);
+  rpc ConsumeMagicLink(ConsumeMagicLinkRequest) returns (ConsumeMagicLinkResponse);
+  rpc RevokeMagicLinks(RevokeMagicLinksRequest) returns (RevokeMagicLinksResponse);
 }
 
 // Метаданные конечного пользователя; их передаёт бэкенд сайта
@@ -171,7 +184,8 @@ message ValidateTokenResponse {
   string user_id = 2;
   string email = 3;
   bool is_admin = 4;
-  int64 expires_at = 5; // unix-время
+  int64 expires_at = 5;    // unix-время
+  repeated Role roles = 6; // роли пользователя по проектам (BFF не делает второй запрос)
 }
 
 message GetPublicKeysRequest {}
@@ -288,4 +302,91 @@ message IsAdminRequest {
 
 message IsAdminResponse {
   bool is_admin = 1;
+}
+
+// --- Роли ---
+
+// Роль пользователя в рамках конкретного проекта.
+message Role {
+  string name = 1;    // admin | moderator | jury
+  string project = 2; // идентификатор проекта (например "muzikagordyh")
+}
+
+message GrantRoleRequest {
+  string user_id = 1; // hex ObjectID
+  Role role = 2;
+}
+
+message GrantRoleResponse {
+  bool success = 1;
+}
+
+message RevokeRoleRequest {
+  string user_id = 1; // hex ObjectID
+  Role role = 2;
+}
+
+message RevokeRoleResponse {
+  bool success = 1;
+}
+
+message GetUserRolesRequest {
+  string user_id = 1; // hex ObjectID
+}
+
+message GetUserRolesResponse {
+  repeated Role roles = 1;
+}
+
+message ListUsersByRoleRequest {
+  Role role = 1; // имя роли + проект
+}
+
+// Краткая карточка пользователя для списков по роли.
+message RoleUser {
+  string user_id = 1; // hex ObjectID
+  string email = 2;
+  string name = 3; // отображаемое имя; может быть пустым
+}
+
+message ListUsersByRoleResponse {
+  repeated RoleUser users = 1;
+}
+
+// --- Magic-link ---
+
+message CreateMagicLinkRequest {
+  string user_id = 1;   // hex ObjectID (член жюри)
+  string project = 2;   // проект, в рамках которого действует ссылка
+  string scope_id = 3;  // ID тура голосования во внешней системе
+  int64 expires_at = 4; // unix-время истечения ссылки
+}
+
+message CreateMagicLinkResponse {
+  string token = 1; // непрозрачный токен; хранится на сервере — можно отозвать
+}
+
+message ConsumeMagicLinkRequest {
+  string token = 1;
+  ClientMeta meta = 2;
+}
+
+// Вход по ссылке создаёт полноценную сессию. Токен НЕ одноразовый:
+// повторный вход допустим, пока ссылка не отозвана и не истекла.
+message ConsumeMagicLinkResponse {
+  string user_id = 1;
+  repeated Role roles = 2;
+  string scope_id = 3; // ID тура, к которому привязана ссылка
+  TokenPair tokens = 4;
+}
+
+// Фильтры комбинируются по И; хотя бы один должен быть задан.
+// Отзыв ссылок отзывает и выданные по ним refresh-сессии.
+message RevokeMagicLinksRequest {
+  string scope_id = 1; // отозвать все ссылки тура
+  string user_id = 2;  // отозвать ссылки одного члена жюри
+}
+
+message RevokeMagicLinksResponse {
+  int64 revoked_count = 1; // количество отозванных ссылок
 }

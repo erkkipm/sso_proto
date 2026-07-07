@@ -2971,6 +2971,301 @@ func (x *ListUsersByRoleResponse) GetUsers() []*RoleUser {
 	return nil
 }
 
+type ListUsersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`                              // номер страницы, начиная с 1
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`      // размер страницы
+	EmailQuery    string                 `protobuf:"bytes,3,opt,name=email_query,json=emailQuery,proto3" json:"email_query,omitempty"` // фильтр по email (подстрока); пусто — без фильтра
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersRequest) Reset() {
+	*x = ListUsersRequest{}
+	mi := &file_auth_v1_auth_proto_msgTypes[56]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersRequest) ProtoMessage() {}
+
+func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[56]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
+func (*ListUsersRequest) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{56}
+}
+
+func (x *ListUsersRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetEmailQuery() string {
+	if x != nil {
+		return x.EmailQuery
+	}
+	return ""
+}
+
+// Карточка пользователя приложения для списка в админке.
+// Роли могут быть пустыми — в списке отображаются в том числе
+// пользователи без назначенных ролей.
+type UserInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // hex ObjectID
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Phone         string                 `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
+	EmailVerified bool                   `protobuf:"varint,4,opt,name=email_verified,json=emailVerified,proto3" json:"email_verified,omitempty"`
+	IsAdmin       bool                   `protobuf:"varint,5,opt,name=is_admin,json=isAdmin,proto3" json:"is_admin,omitempty"`
+	Roles         []*Role                `protobuf:"bytes,6,rep,name=roles,proto3" json:"roles,omitempty"`                           // роли пользователя по проектам; может быть пусто
+	CreatedAt     int64                  `protobuf:"varint,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // unix-время
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserInfo) Reset() {
+	*x = UserInfo{}
+	mi := &file_auth_v1_auth_proto_msgTypes[57]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserInfo) ProtoMessage() {}
+
+func (x *UserInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[57]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserInfo.ProtoReflect.Descriptor instead.
+func (*UserInfo) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{57}
+}
+
+func (x *UserInfo) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *UserInfo) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UserInfo) GetPhone() string {
+	if x != nil {
+		return x.Phone
+	}
+	return ""
+}
+
+func (x *UserInfo) GetEmailVerified() bool {
+	if x != nil {
+		return x.EmailVerified
+	}
+	return false
+}
+
+func (x *UserInfo) GetIsAdmin() bool {
+	if x != nil {
+		return x.IsAdmin
+	}
+	return false
+}
+
+func (x *UserInfo) GetRoles() []*Role {
+	if x != nil {
+		return x.Roles
+	}
+	return nil
+}
+
+func (x *UserInfo) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+type ListUsersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*UserInfo            `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"` // общее число пользователей с учётом фильтра (для пагинации)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersResponse) Reset() {
+	*x = ListUsersResponse{}
+	mi := &file_auth_v1_auth_proto_msgTypes[58]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersResponse) ProtoMessage() {}
+
+func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[58]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersResponse.ProtoReflect.Descriptor instead.
+func (*ListUsersResponse) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{58}
+}
+
+func (x *ListUsersResponse) GetUsers() []*UserInfo {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+func (x *ListUsersResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+type DeleteUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // hex ObjectID
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserRequest) Reset() {
+	*x = DeleteUserRequest{}
+	mi := &file_auth_v1_auth_proto_msgTypes[59]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserRequest) ProtoMessage() {}
+
+func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[59]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{59}
+}
+
+func (x *DeleteUserRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type DeleteUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserResponse) Reset() {
+	*x = DeleteUserResponse{}
+	mi := &file_auth_v1_auth_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserResponse) ProtoMessage() {}
+
+func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
+func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{60}
+}
+
+func (x *DeleteUserResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 type CreateMagicLinkRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`           // hex ObjectID (член жюри)
@@ -2983,7 +3278,7 @@ type CreateMagicLinkRequest struct {
 
 func (x *CreateMagicLinkRequest) Reset() {
 	*x = CreateMagicLinkRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[56]
+	mi := &file_auth_v1_auth_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2995,7 +3290,7 @@ func (x *CreateMagicLinkRequest) String() string {
 func (*CreateMagicLinkRequest) ProtoMessage() {}
 
 func (x *CreateMagicLinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[56]
+	mi := &file_auth_v1_auth_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3008,7 +3303,7 @@ func (x *CreateMagicLinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateMagicLinkRequest.ProtoReflect.Descriptor instead.
 func (*CreateMagicLinkRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{56}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *CreateMagicLinkRequest) GetUserId() string {
@@ -3048,7 +3343,7 @@ type CreateMagicLinkResponse struct {
 
 func (x *CreateMagicLinkResponse) Reset() {
 	*x = CreateMagicLinkResponse{}
-	mi := &file_auth_v1_auth_proto_msgTypes[57]
+	mi := &file_auth_v1_auth_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3060,7 +3355,7 @@ func (x *CreateMagicLinkResponse) String() string {
 func (*CreateMagicLinkResponse) ProtoMessage() {}
 
 func (x *CreateMagicLinkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[57]
+	mi := &file_auth_v1_auth_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3073,7 +3368,7 @@ func (x *CreateMagicLinkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateMagicLinkResponse.ProtoReflect.Descriptor instead.
 func (*CreateMagicLinkResponse) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{57}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *CreateMagicLinkResponse) GetToken() string {
@@ -3093,7 +3388,7 @@ type ConsumeMagicLinkRequest struct {
 
 func (x *ConsumeMagicLinkRequest) Reset() {
 	*x = ConsumeMagicLinkRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[58]
+	mi := &file_auth_v1_auth_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3105,7 +3400,7 @@ func (x *ConsumeMagicLinkRequest) String() string {
 func (*ConsumeMagicLinkRequest) ProtoMessage() {}
 
 func (x *ConsumeMagicLinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[58]
+	mi := &file_auth_v1_auth_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3118,7 +3413,7 @@ func (x *ConsumeMagicLinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConsumeMagicLinkRequest.ProtoReflect.Descriptor instead.
 func (*ConsumeMagicLinkRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{58}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *ConsumeMagicLinkRequest) GetToken() string {
@@ -3149,7 +3444,7 @@ type ConsumeMagicLinkResponse struct {
 
 func (x *ConsumeMagicLinkResponse) Reset() {
 	*x = ConsumeMagicLinkResponse{}
-	mi := &file_auth_v1_auth_proto_msgTypes[59]
+	mi := &file_auth_v1_auth_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3161,7 +3456,7 @@ func (x *ConsumeMagicLinkResponse) String() string {
 func (*ConsumeMagicLinkResponse) ProtoMessage() {}
 
 func (x *ConsumeMagicLinkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[59]
+	mi := &file_auth_v1_auth_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3174,7 +3469,7 @@ func (x *ConsumeMagicLinkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConsumeMagicLinkResponse.ProtoReflect.Descriptor instead.
 func (*ConsumeMagicLinkResponse) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{59}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *ConsumeMagicLinkResponse) GetUserId() string {
@@ -3217,7 +3512,7 @@ type RevokeMagicLinksRequest struct {
 
 func (x *RevokeMagicLinksRequest) Reset() {
 	*x = RevokeMagicLinksRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[60]
+	mi := &file_auth_v1_auth_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3229,7 +3524,7 @@ func (x *RevokeMagicLinksRequest) String() string {
 func (*RevokeMagicLinksRequest) ProtoMessage() {}
 
 func (x *RevokeMagicLinksRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[60]
+	mi := &file_auth_v1_auth_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3242,7 +3537,7 @@ func (x *RevokeMagicLinksRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeMagicLinksRequest.ProtoReflect.Descriptor instead.
 func (*RevokeMagicLinksRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{60}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *RevokeMagicLinksRequest) GetScopeId() string {
@@ -3268,7 +3563,7 @@ type RevokeMagicLinksResponse struct {
 
 func (x *RevokeMagicLinksResponse) Reset() {
 	*x = RevokeMagicLinksResponse{}
-	mi := &file_auth_v1_auth_proto_msgTypes[61]
+	mi := &file_auth_v1_auth_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3280,7 +3575,7 @@ func (x *RevokeMagicLinksResponse) String() string {
 func (*RevokeMagicLinksResponse) ProtoMessage() {}
 
 func (x *RevokeMagicLinksResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[61]
+	mi := &file_auth_v1_auth_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3293,7 +3588,7 @@ func (x *RevokeMagicLinksResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeMagicLinksResponse.ProtoReflect.Descriptor instead.
 func (*RevokeMagicLinksResponse) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{61}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *RevokeMagicLinksResponse) GetRevokedCount() int64 {
@@ -3477,7 +3772,28 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\"B\n" +
 	"\x17ListUsersByRoleResponse\x12'\n" +
-	"\x05users\x18\x01 \x03(\v2\x11.auth.v1.RoleUserR\x05users\"\x85\x01\n" +
+	"\x05users\x18\x01 \x03(\v2\x11.auth.v1.RoleUserR\x05users\"d\n" +
+	"\x10ListUsersRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1f\n" +
+	"\vemail_query\x18\x03 \x01(\tR\n" +
+	"emailQuery\"\xd5\x01\n" +
+	"\bUserInfo\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x14\n" +
+	"\x05phone\x18\x03 \x01(\tR\x05phone\x12%\n" +
+	"\x0eemail_verified\x18\x04 \x01(\bR\remailVerified\x12\x19\n" +
+	"\bis_admin\x18\x05 \x01(\bR\aisAdmin\x12#\n" +
+	"\x05roles\x18\x06 \x03(\v2\r.auth.v1.RoleR\x05roles\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\x03R\tcreatedAt\"R\n" +
+	"\x11ListUsersResponse\x12'\n" +
+	"\x05users\x18\x01 \x03(\v2\x11.auth.v1.UserInfoR\x05users\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\",\n" +
+	"\x11DeleteUserRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\".\n" +
+	"\x12DeleteUserResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x85\x01\n" +
 	"\x16CreateMagicLinkRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x18\n" +
 	"\aproject\x18\x02 \x01(\tR\aproject\x12\x19\n" +
@@ -3504,7 +3820,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x16TWO_FACTOR_METHOD_TOTP\x10\x01\x12\x1b\n" +
 	"\x17TWO_FACTOR_METHOD_EMAIL\x10\x02\x12\x1e\n" +
 	"\x1aTWO_FACTOR_METHOD_TELEGRAM\x10\x03\x12#\n" +
-	"\x1fTWO_FACTOR_METHOD_RECOVERY_CODE\x10\x042\xe8\x11\n" +
+	"\x1fTWO_FACTOR_METHOD_RECOVERY_CODE\x10\x042\xf3\x12\n" +
 	"\vAuthService\x12?\n" +
 	"\bRegister\x12\x18.auth.v1.RegisterRequest\x1a\x19.auth.v1.RegisterResponse\x12K\n" +
 	"\fConfirmEmail\x12\x1c.auth.v1.ConfirmEmailRequest\x1a\x1d.auth.v1.ConfirmEmailResponse\x12T\n" +
@@ -3531,7 +3847,10 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
 	"RevokeRole\x12\x1a.auth.v1.RevokeRoleRequest\x1a\x1b.auth.v1.RevokeRoleResponse\x12K\n" +
 	"\fGetUserRoles\x12\x1c.auth.v1.GetUserRolesRequest\x1a\x1d.auth.v1.GetUserRolesResponse\x12T\n" +
-	"\x0fListUsersByRole\x12\x1f.auth.v1.ListUsersByRoleRequest\x1a .auth.v1.ListUsersByRoleResponse\x12T\n" +
+	"\x0fListUsersByRole\x12\x1f.auth.v1.ListUsersByRoleRequest\x1a .auth.v1.ListUsersByRoleResponse\x12B\n" +
+	"\tListUsers\x12\x19.auth.v1.ListUsersRequest\x1a\x1a.auth.v1.ListUsersResponse\x12E\n" +
+	"\n" +
+	"DeleteUser\x12\x1a.auth.v1.DeleteUserRequest\x1a\x1b.auth.v1.DeleteUserResponse\x12T\n" +
 	"\x0fCreateMagicLink\x12\x1f.auth.v1.CreateMagicLinkRequest\x1a .auth.v1.CreateMagicLinkResponse\x12W\n" +
 	"\x10ConsumeMagicLink\x12 .auth.v1.ConsumeMagicLinkRequest\x1a!.auth.v1.ConsumeMagicLinkResponse\x12W\n" +
 	"\x10RevokeMagicLinks\x12 .auth.v1.RevokeMagicLinksRequest\x1a!.auth.v1.RevokeMagicLinksResponseB4Z2github.com/erkkipm/sso_proto/gen/go/auth/v1;authv1b\x06proto3"
@@ -3549,7 +3868,7 @@ func file_auth_v1_auth_proto_rawDescGZIP() []byte {
 }
 
 var file_auth_v1_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 62)
+var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 67)
 var file_auth_v1_auth_proto_goTypes = []any{
 	(TwoFactorMethod)(0),                  // 0: auth.v1.TwoFactorMethod
 	(*ClientMeta)(nil),                    // 1: auth.v1.ClientMeta
@@ -3608,12 +3927,17 @@ var file_auth_v1_auth_proto_goTypes = []any{
 	(*ListUsersByRoleRequest)(nil),        // 54: auth.v1.ListUsersByRoleRequest
 	(*RoleUser)(nil),                      // 55: auth.v1.RoleUser
 	(*ListUsersByRoleResponse)(nil),       // 56: auth.v1.ListUsersByRoleResponse
-	(*CreateMagicLinkRequest)(nil),        // 57: auth.v1.CreateMagicLinkRequest
-	(*CreateMagicLinkResponse)(nil),       // 58: auth.v1.CreateMagicLinkResponse
-	(*ConsumeMagicLinkRequest)(nil),       // 59: auth.v1.ConsumeMagicLinkRequest
-	(*ConsumeMagicLinkResponse)(nil),      // 60: auth.v1.ConsumeMagicLinkResponse
-	(*RevokeMagicLinksRequest)(nil),       // 61: auth.v1.RevokeMagicLinksRequest
-	(*RevokeMagicLinksResponse)(nil),      // 62: auth.v1.RevokeMagicLinksResponse
+	(*ListUsersRequest)(nil),              // 57: auth.v1.ListUsersRequest
+	(*UserInfo)(nil),                      // 58: auth.v1.UserInfo
+	(*ListUsersResponse)(nil),             // 59: auth.v1.ListUsersResponse
+	(*DeleteUserRequest)(nil),             // 60: auth.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),            // 61: auth.v1.DeleteUserResponse
+	(*CreateMagicLinkRequest)(nil),        // 62: auth.v1.CreateMagicLinkRequest
+	(*CreateMagicLinkResponse)(nil),       // 63: auth.v1.CreateMagicLinkResponse
+	(*ConsumeMagicLinkRequest)(nil),       // 64: auth.v1.ConsumeMagicLinkRequest
+	(*ConsumeMagicLinkResponse)(nil),      // 65: auth.v1.ConsumeMagicLinkResponse
+	(*RevokeMagicLinksRequest)(nil),       // 66: auth.v1.RevokeMagicLinksRequest
+	(*RevokeMagicLinksResponse)(nil),      // 67: auth.v1.RevokeMagicLinksResponse
 }
 var file_auth_v1_auth_proto_depIdxs = []int32{
 	0,  // 0: auth.v1.TwoFactorChallenge.available_methods:type_name -> auth.v1.TwoFactorMethod
@@ -3641,70 +3965,76 @@ var file_auth_v1_auth_proto_depIdxs = []int32{
 	47, // 22: auth.v1.GetUserRolesResponse.roles:type_name -> auth.v1.Role
 	47, // 23: auth.v1.ListUsersByRoleRequest.role:type_name -> auth.v1.Role
 	55, // 24: auth.v1.ListUsersByRoleResponse.users:type_name -> auth.v1.RoleUser
-	1,  // 25: auth.v1.ConsumeMagicLinkRequest.meta:type_name -> auth.v1.ClientMeta
-	47, // 26: auth.v1.ConsumeMagicLinkResponse.roles:type_name -> auth.v1.Role
-	2,  // 27: auth.v1.ConsumeMagicLinkResponse.tokens:type_name -> auth.v1.TokenPair
-	4,  // 28: auth.v1.AuthService.Register:input_type -> auth.v1.RegisterRequest
-	6,  // 29: auth.v1.AuthService.ConfirmEmail:input_type -> auth.v1.ConfirmEmailRequest
-	8,  // 30: auth.v1.AuthService.ResendEmailCode:input_type -> auth.v1.ResendEmailCodeRequest
-	10, // 31: auth.v1.AuthService.Login:input_type -> auth.v1.LoginRequest
-	12, // 32: auth.v1.AuthService.RequestTwoFactorCode:input_type -> auth.v1.RequestTwoFactorCodeRequest
-	14, // 33: auth.v1.AuthService.VerifyTwoFactor:input_type -> auth.v1.VerifyTwoFactorRequest
-	16, // 34: auth.v1.AuthService.Refresh:input_type -> auth.v1.RefreshRequest
-	18, // 35: auth.v1.AuthService.Logout:input_type -> auth.v1.LogoutRequest
-	20, // 36: auth.v1.AuthService.ValidateToken:input_type -> auth.v1.ValidateTokenRequest
-	22, // 37: auth.v1.AuthService.GetPublicKeys:input_type -> auth.v1.GetPublicKeysRequest
-	25, // 38: auth.v1.AuthService.ChangePassword:input_type -> auth.v1.ChangePasswordRequest
-	27, // 39: auth.v1.AuthService.RequestPasswordReset:input_type -> auth.v1.RequestPasswordResetRequest
-	29, // 40: auth.v1.AuthService.ResetPassword:input_type -> auth.v1.ResetPasswordRequest
-	31, // 41: auth.v1.AuthService.GetTwoFactorStatus:input_type -> auth.v1.GetTwoFactorStatusRequest
-	33, // 42: auth.v1.AuthService.BeginTOTPEnrollment:input_type -> auth.v1.BeginTOTPEnrollmentRequest
-	35, // 43: auth.v1.AuthService.ConfirmTOTPEnrollment:input_type -> auth.v1.ConfirmTOTPEnrollmentRequest
-	37, // 44: auth.v1.AuthService.DisableTwoFactor:input_type -> auth.v1.DisableTwoFactorRequest
-	39, // 45: auth.v1.AuthService.BeginTelegramLink:input_type -> auth.v1.BeginTelegramLinkRequest
-	41, // 46: auth.v1.AuthService.UnlinkTelegram:input_type -> auth.v1.UnlinkTelegramRequest
-	43, // 47: auth.v1.AuthService.GetUser:input_type -> auth.v1.GetUserRequest
-	45, // 48: auth.v1.AuthService.IsAdmin:input_type -> auth.v1.IsAdminRequest
-	48, // 49: auth.v1.AuthService.GrantRole:input_type -> auth.v1.GrantRoleRequest
-	50, // 50: auth.v1.AuthService.RevokeRole:input_type -> auth.v1.RevokeRoleRequest
-	52, // 51: auth.v1.AuthService.GetUserRoles:input_type -> auth.v1.GetUserRolesRequest
-	54, // 52: auth.v1.AuthService.ListUsersByRole:input_type -> auth.v1.ListUsersByRoleRequest
-	57, // 53: auth.v1.AuthService.CreateMagicLink:input_type -> auth.v1.CreateMagicLinkRequest
-	59, // 54: auth.v1.AuthService.ConsumeMagicLink:input_type -> auth.v1.ConsumeMagicLinkRequest
-	61, // 55: auth.v1.AuthService.RevokeMagicLinks:input_type -> auth.v1.RevokeMagicLinksRequest
-	5,  // 56: auth.v1.AuthService.Register:output_type -> auth.v1.RegisterResponse
-	7,  // 57: auth.v1.AuthService.ConfirmEmail:output_type -> auth.v1.ConfirmEmailResponse
-	9,  // 58: auth.v1.AuthService.ResendEmailCode:output_type -> auth.v1.ResendEmailCodeResponse
-	11, // 59: auth.v1.AuthService.Login:output_type -> auth.v1.LoginResponse
-	13, // 60: auth.v1.AuthService.RequestTwoFactorCode:output_type -> auth.v1.RequestTwoFactorCodeResponse
-	15, // 61: auth.v1.AuthService.VerifyTwoFactor:output_type -> auth.v1.VerifyTwoFactorResponse
-	17, // 62: auth.v1.AuthService.Refresh:output_type -> auth.v1.RefreshResponse
-	19, // 63: auth.v1.AuthService.Logout:output_type -> auth.v1.LogoutResponse
-	21, // 64: auth.v1.AuthService.ValidateToken:output_type -> auth.v1.ValidateTokenResponse
-	24, // 65: auth.v1.AuthService.GetPublicKeys:output_type -> auth.v1.GetPublicKeysResponse
-	26, // 66: auth.v1.AuthService.ChangePassword:output_type -> auth.v1.ChangePasswordResponse
-	28, // 67: auth.v1.AuthService.RequestPasswordReset:output_type -> auth.v1.RequestPasswordResetResponse
-	30, // 68: auth.v1.AuthService.ResetPassword:output_type -> auth.v1.ResetPasswordResponse
-	32, // 69: auth.v1.AuthService.GetTwoFactorStatus:output_type -> auth.v1.GetTwoFactorStatusResponse
-	34, // 70: auth.v1.AuthService.BeginTOTPEnrollment:output_type -> auth.v1.BeginTOTPEnrollmentResponse
-	36, // 71: auth.v1.AuthService.ConfirmTOTPEnrollment:output_type -> auth.v1.ConfirmTOTPEnrollmentResponse
-	38, // 72: auth.v1.AuthService.DisableTwoFactor:output_type -> auth.v1.DisableTwoFactorResponse
-	40, // 73: auth.v1.AuthService.BeginTelegramLink:output_type -> auth.v1.BeginTelegramLinkResponse
-	42, // 74: auth.v1.AuthService.UnlinkTelegram:output_type -> auth.v1.UnlinkTelegramResponse
-	44, // 75: auth.v1.AuthService.GetUser:output_type -> auth.v1.GetUserResponse
-	46, // 76: auth.v1.AuthService.IsAdmin:output_type -> auth.v1.IsAdminResponse
-	49, // 77: auth.v1.AuthService.GrantRole:output_type -> auth.v1.GrantRoleResponse
-	51, // 78: auth.v1.AuthService.RevokeRole:output_type -> auth.v1.RevokeRoleResponse
-	53, // 79: auth.v1.AuthService.GetUserRoles:output_type -> auth.v1.GetUserRolesResponse
-	56, // 80: auth.v1.AuthService.ListUsersByRole:output_type -> auth.v1.ListUsersByRoleResponse
-	58, // 81: auth.v1.AuthService.CreateMagicLink:output_type -> auth.v1.CreateMagicLinkResponse
-	60, // 82: auth.v1.AuthService.ConsumeMagicLink:output_type -> auth.v1.ConsumeMagicLinkResponse
-	62, // 83: auth.v1.AuthService.RevokeMagicLinks:output_type -> auth.v1.RevokeMagicLinksResponse
-	56, // [56:84] is the sub-list for method output_type
-	28, // [28:56] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	47, // 25: auth.v1.UserInfo.roles:type_name -> auth.v1.Role
+	58, // 26: auth.v1.ListUsersResponse.users:type_name -> auth.v1.UserInfo
+	1,  // 27: auth.v1.ConsumeMagicLinkRequest.meta:type_name -> auth.v1.ClientMeta
+	47, // 28: auth.v1.ConsumeMagicLinkResponse.roles:type_name -> auth.v1.Role
+	2,  // 29: auth.v1.ConsumeMagicLinkResponse.tokens:type_name -> auth.v1.TokenPair
+	4,  // 30: auth.v1.AuthService.Register:input_type -> auth.v1.RegisterRequest
+	6,  // 31: auth.v1.AuthService.ConfirmEmail:input_type -> auth.v1.ConfirmEmailRequest
+	8,  // 32: auth.v1.AuthService.ResendEmailCode:input_type -> auth.v1.ResendEmailCodeRequest
+	10, // 33: auth.v1.AuthService.Login:input_type -> auth.v1.LoginRequest
+	12, // 34: auth.v1.AuthService.RequestTwoFactorCode:input_type -> auth.v1.RequestTwoFactorCodeRequest
+	14, // 35: auth.v1.AuthService.VerifyTwoFactor:input_type -> auth.v1.VerifyTwoFactorRequest
+	16, // 36: auth.v1.AuthService.Refresh:input_type -> auth.v1.RefreshRequest
+	18, // 37: auth.v1.AuthService.Logout:input_type -> auth.v1.LogoutRequest
+	20, // 38: auth.v1.AuthService.ValidateToken:input_type -> auth.v1.ValidateTokenRequest
+	22, // 39: auth.v1.AuthService.GetPublicKeys:input_type -> auth.v1.GetPublicKeysRequest
+	25, // 40: auth.v1.AuthService.ChangePassword:input_type -> auth.v1.ChangePasswordRequest
+	27, // 41: auth.v1.AuthService.RequestPasswordReset:input_type -> auth.v1.RequestPasswordResetRequest
+	29, // 42: auth.v1.AuthService.ResetPassword:input_type -> auth.v1.ResetPasswordRequest
+	31, // 43: auth.v1.AuthService.GetTwoFactorStatus:input_type -> auth.v1.GetTwoFactorStatusRequest
+	33, // 44: auth.v1.AuthService.BeginTOTPEnrollment:input_type -> auth.v1.BeginTOTPEnrollmentRequest
+	35, // 45: auth.v1.AuthService.ConfirmTOTPEnrollment:input_type -> auth.v1.ConfirmTOTPEnrollmentRequest
+	37, // 46: auth.v1.AuthService.DisableTwoFactor:input_type -> auth.v1.DisableTwoFactorRequest
+	39, // 47: auth.v1.AuthService.BeginTelegramLink:input_type -> auth.v1.BeginTelegramLinkRequest
+	41, // 48: auth.v1.AuthService.UnlinkTelegram:input_type -> auth.v1.UnlinkTelegramRequest
+	43, // 49: auth.v1.AuthService.GetUser:input_type -> auth.v1.GetUserRequest
+	45, // 50: auth.v1.AuthService.IsAdmin:input_type -> auth.v1.IsAdminRequest
+	48, // 51: auth.v1.AuthService.GrantRole:input_type -> auth.v1.GrantRoleRequest
+	50, // 52: auth.v1.AuthService.RevokeRole:input_type -> auth.v1.RevokeRoleRequest
+	52, // 53: auth.v1.AuthService.GetUserRoles:input_type -> auth.v1.GetUserRolesRequest
+	54, // 54: auth.v1.AuthService.ListUsersByRole:input_type -> auth.v1.ListUsersByRoleRequest
+	57, // 55: auth.v1.AuthService.ListUsers:input_type -> auth.v1.ListUsersRequest
+	60, // 56: auth.v1.AuthService.DeleteUser:input_type -> auth.v1.DeleteUserRequest
+	62, // 57: auth.v1.AuthService.CreateMagicLink:input_type -> auth.v1.CreateMagicLinkRequest
+	64, // 58: auth.v1.AuthService.ConsumeMagicLink:input_type -> auth.v1.ConsumeMagicLinkRequest
+	66, // 59: auth.v1.AuthService.RevokeMagicLinks:input_type -> auth.v1.RevokeMagicLinksRequest
+	5,  // 60: auth.v1.AuthService.Register:output_type -> auth.v1.RegisterResponse
+	7,  // 61: auth.v1.AuthService.ConfirmEmail:output_type -> auth.v1.ConfirmEmailResponse
+	9,  // 62: auth.v1.AuthService.ResendEmailCode:output_type -> auth.v1.ResendEmailCodeResponse
+	11, // 63: auth.v1.AuthService.Login:output_type -> auth.v1.LoginResponse
+	13, // 64: auth.v1.AuthService.RequestTwoFactorCode:output_type -> auth.v1.RequestTwoFactorCodeResponse
+	15, // 65: auth.v1.AuthService.VerifyTwoFactor:output_type -> auth.v1.VerifyTwoFactorResponse
+	17, // 66: auth.v1.AuthService.Refresh:output_type -> auth.v1.RefreshResponse
+	19, // 67: auth.v1.AuthService.Logout:output_type -> auth.v1.LogoutResponse
+	21, // 68: auth.v1.AuthService.ValidateToken:output_type -> auth.v1.ValidateTokenResponse
+	24, // 69: auth.v1.AuthService.GetPublicKeys:output_type -> auth.v1.GetPublicKeysResponse
+	26, // 70: auth.v1.AuthService.ChangePassword:output_type -> auth.v1.ChangePasswordResponse
+	28, // 71: auth.v1.AuthService.RequestPasswordReset:output_type -> auth.v1.RequestPasswordResetResponse
+	30, // 72: auth.v1.AuthService.ResetPassword:output_type -> auth.v1.ResetPasswordResponse
+	32, // 73: auth.v1.AuthService.GetTwoFactorStatus:output_type -> auth.v1.GetTwoFactorStatusResponse
+	34, // 74: auth.v1.AuthService.BeginTOTPEnrollment:output_type -> auth.v1.BeginTOTPEnrollmentResponse
+	36, // 75: auth.v1.AuthService.ConfirmTOTPEnrollment:output_type -> auth.v1.ConfirmTOTPEnrollmentResponse
+	38, // 76: auth.v1.AuthService.DisableTwoFactor:output_type -> auth.v1.DisableTwoFactorResponse
+	40, // 77: auth.v1.AuthService.BeginTelegramLink:output_type -> auth.v1.BeginTelegramLinkResponse
+	42, // 78: auth.v1.AuthService.UnlinkTelegram:output_type -> auth.v1.UnlinkTelegramResponse
+	44, // 79: auth.v1.AuthService.GetUser:output_type -> auth.v1.GetUserResponse
+	46, // 80: auth.v1.AuthService.IsAdmin:output_type -> auth.v1.IsAdminResponse
+	49, // 81: auth.v1.AuthService.GrantRole:output_type -> auth.v1.GrantRoleResponse
+	51, // 82: auth.v1.AuthService.RevokeRole:output_type -> auth.v1.RevokeRoleResponse
+	53, // 83: auth.v1.AuthService.GetUserRoles:output_type -> auth.v1.GetUserRolesResponse
+	56, // 84: auth.v1.AuthService.ListUsersByRole:output_type -> auth.v1.ListUsersByRoleResponse
+	59, // 85: auth.v1.AuthService.ListUsers:output_type -> auth.v1.ListUsersResponse
+	61, // 86: auth.v1.AuthService.DeleteUser:output_type -> auth.v1.DeleteUserResponse
+	63, // 87: auth.v1.AuthService.CreateMagicLink:output_type -> auth.v1.CreateMagicLinkResponse
+	65, // 88: auth.v1.AuthService.ConsumeMagicLink:output_type -> auth.v1.ConsumeMagicLinkResponse
+	67, // 89: auth.v1.AuthService.RevokeMagicLinks:output_type -> auth.v1.RevokeMagicLinksResponse
+	60, // [60:90] is the sub-list for method output_type
+	30, // [30:60] is the sub-list for method input_type
+	30, // [30:30] is the sub-list for extension type_name
+	30, // [30:30] is the sub-list for extension extendee
+	0,  // [0:30] is the sub-list for field type_name
 }
 
 func init() { file_auth_v1_auth_proto_init() }
@@ -3722,7 +4052,7 @@ func file_auth_v1_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_v1_auth_proto_rawDesc), len(file_auth_v1_auth_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   62,
+			NumMessages:   67,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

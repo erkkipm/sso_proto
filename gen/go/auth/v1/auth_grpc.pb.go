@@ -49,6 +49,8 @@ const (
 	AuthService_RevokeRole_FullMethodName            = "/auth.v1.AuthService/RevokeRole"
 	AuthService_GetUserRoles_FullMethodName          = "/auth.v1.AuthService/GetUserRoles"
 	AuthService_ListUsersByRole_FullMethodName       = "/auth.v1.AuthService/ListUsersByRole"
+	AuthService_ListUsers_FullMethodName             = "/auth.v1.AuthService/ListUsers"
+	AuthService_DeleteUser_FullMethodName            = "/auth.v1.AuthService/DeleteUser"
 	AuthService_CreateMagicLink_FullMethodName       = "/auth.v1.AuthService/CreateMagicLink"
 	AuthService_ConsumeMagicLink_FullMethodName      = "/auth.v1.AuthService/ConsumeMagicLink"
 	AuthService_RevokeMagicLinks_FullMethodName      = "/auth.v1.AuthService/RevokeMagicLinks"
@@ -91,6 +93,13 @@ type AuthServiceClient interface {
 	RevokeRole(ctx context.Context, in *RevokeRoleRequest, opts ...grpc.CallOption) (*RevokeRoleResponse, error)
 	GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesResponse, error)
 	ListUsersByRole(ctx context.Context, in *ListUsersByRoleRequest, opts ...grpc.CallOption) (*ListUsersByRoleResponse, error)
+	// --- Администрирование пользователей ---
+	// Список всех пользователей приложения (app_id из app-auth), с пагинацией
+	// и фильтром по email; server-to-server.
+	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	// Полное удаление пользователя приложения вместе с его ролями, сессиями
+	// и refresh-токенами. Доступ: Bearer администратора.
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	// --- Magic-link (вход жюри без пароля; server-to-server) ---
 	// Персональная ссылка на тур голосования: НЕ одноразовая,
 	// действует до отзыва или истечения срока.
@@ -357,6 +366,26 @@ func (c *authServiceClient) ListUsersByRole(ctx context.Context, in *ListUsersBy
 	return out, nil
 }
 
+func (c *authServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, AuthService_ListUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_DeleteUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) CreateMagicLink(ctx context.Context, in *CreateMagicLinkRequest, opts ...grpc.CallOption) (*CreateMagicLinkResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateMagicLinkResponse)
@@ -424,6 +453,13 @@ type AuthServiceServer interface {
 	RevokeRole(context.Context, *RevokeRoleRequest) (*RevokeRoleResponse, error)
 	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesResponse, error)
 	ListUsersByRole(context.Context, *ListUsersByRoleRequest) (*ListUsersByRoleResponse, error)
+	// --- Администрирование пользователей ---
+	// Список всех пользователей приложения (app_id из app-auth), с пагинацией
+	// и фильтром по email; server-to-server.
+	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	// Полное удаление пользователя приложения вместе с его ролями, сессиями
+	// и refresh-токенами. Доступ: Bearer администратора.
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	// --- Magic-link (вход жюри без пароля; server-to-server) ---
 	// Персональная ссылка на тур голосования: НЕ одноразовая,
 	// действует до отзыва или истечения срока.
@@ -514,6 +550,12 @@ func (UnimplementedAuthServiceServer) GetUserRoles(context.Context, *GetUserRole
 }
 func (UnimplementedAuthServiceServer) ListUsersByRole(context.Context, *ListUsersByRoleRequest) (*ListUsersByRoleResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListUsersByRole not implemented")
+}
+func (UnimplementedAuthServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedAuthServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedAuthServiceServer) CreateMagicLink(context.Context, *CreateMagicLinkRequest) (*CreateMagicLinkResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateMagicLink not implemented")
@@ -995,6 +1037,42 @@ func _AuthService_ListUsersByRole_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ListUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeleteUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_CreateMagicLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateMagicLinkRequest)
 	if err := dec(in); err != nil {
@@ -1155,6 +1233,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUsersByRole",
 			Handler:    _AuthService_ListUsersByRole_Handler,
+		},
+		{
+			MethodName: "ListUsers",
+			Handler:    _AuthService_ListUsers_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _AuthService_DeleteUser_Handler,
 		},
 		{
 			MethodName: "CreateMagicLink",
